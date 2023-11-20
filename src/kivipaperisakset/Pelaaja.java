@@ -1,4 +1,3 @@
-
 package kivipaperisakset;
 
 /**
@@ -13,38 +12,50 @@ package kivipaperisakset;
  */
 public class Pelaaja {
 
-    int voitot; // Voittojen lukumäärä
-    int voitotYhteensä;
+    private static int uId = 1; // Pelaaja-luokan uniikin id:n laskuri
+    private int id; // Pelaajan id
+    private int voitot; // Voittojen lukumäärä
+    private String valinta; // Pelaajan valinta kivipaperisakset-pelissä
+
+    private static final String[] VALINNAT = {"kivi", "paperi", "sakset"};
+
+    public Pelaaja() {
+        id = uId++;
+        voitot = 0;
+    }
 
     /**
      * Pelaaja-luokan pelaajanValinta-metodi arpoo pelaajan valinnan
      * kivipaperisakset-pelissä.
+     *
      * @return palauttaa pelaajan valinnan kivipaperisakset-pelissä.
      * @see Peli
      */
     public String pelaajanValinta() {
-        String valinta = "";
-        int c = (int) (Math.random() * 3);
-        switch (c) {
-            case 0:
-                valinta = ("kivi");
-                break;
-            case 1:
-                valinta = ("paperi");
-                break;
-            case 2:
-                valinta = ("sakset");
-                break;
-        }
+        int c = (int) (Math.random() * VALINNAT.length);
+        valinta = VALINNAT[c];
+        System.out.println("Pelaaja " + this.getId() + " valinta: " + this.getValinta());
         return valinta;
     }
 
-    public int setVoitot() {
-        int voitotYhteensä = voitot++;
-        return voitotYhteensä;
+    public void addVoitto() {
+        voitot += 1;
     }
 
     public int getVoitot() {
-        return (voitot);
+        return this.voitot;
+    }
+
+    public String getValinta() {
+        return this.valinta;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String toString() {
+        return "Pelaaja " + this.getId() + ":llä koossa " + this.getVoitot() + " voittoa.";
     }
 }

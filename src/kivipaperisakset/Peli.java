@@ -1,5 +1,9 @@
 package kivipaperisakset;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static kivipaperisakset.Main.PELIN_VOITTAA;
 /**
  * Peli-luokka
  * Tarkoituksena toimia kivipaperisakset-pelin ohjausluokkana.
@@ -7,60 +11,75 @@ package kivipaperisakset;
  * Peli-luokka käyttää Pelaaja-luokkaa.
  *
  * @author Rasmus Hyyppä
+ * @see Main
  * @see Pelaaja
  */
 public class Peli {
 
-    public static final String PELAAJA_1_VOITTAA = "Pelaaja 1 voittaa";
-    public static final String PELAAJA_2_VOITTAA = "Pelaaja 2 voittaa";
-    public static void main(String args[]) {
-        Pelaaja p1 = new Pelaaja();
-        Pelaaja p2 = new Pelaaja();
-        boolean peliLoppui = false;
-        int pelatutPelit = 0;           // Pelattujen pelien lkm
-        int tasapelit = 0;              // Tasapelien lkm
-        String p1Valinta;
-        String p2Valinta;
-        do {
-            System.out.println("\nErä: "
-                               + pelatutPelit + " =====================\n");
-            System.out.println("Tasapelien lukumäärä: "
-                               + tasapelit + "\n");
-            p1Valinta = p1.pelaajanValinta();
-            System.out.println("Pelaaja 1: " + p1Valinta
-                               + "\n\t Pelaaja 1:llä koossa " + p1.getVoitot() + " voittoa.");
-            p2Valinta = p2.pelaajanValinta();
-            System.out.println("Pelaaja 2: " + p2Valinta
-                               + "\n\t Pelaaja 2:lla koossa " + p2.getVoitot() + " voittoa.\n");
-            if ((p1Valinta.equals("kivi")) && (p2Valinta.equals("paperi"))) {
-                p2.setVoitot();
-                System.out.print(PELAAJA_2_VOITTAA);
-            } else if ((p1Valinta.equals("paperi")) && (p2Valinta.equals("kivi"))) {
-                p1.setVoitot();
-                System.out.print(PELAAJA_1_VOITTAA);
-            } else if ((p1Valinta.equals("kivi")) && (p2Valinta.equals("sakset"))) {
-                p1.setVoitot();
-                System.out.print(PELAAJA_1_VOITTAA);
-            } else if ((p1Valinta.equals("sakset")) && (p2Valinta.equals("kivi"))) {
-                p2.setVoitot();
-                System.out.print(PELAAJA_2_VOITTAA);
-            } else if ((p1Valinta.equals("sakset")) && (p2Valinta.equals("paperi"))) {
-                p1.setVoitot();
-                System.out.print(PELAAJA_1_VOITTAA);
-            } else if ((p1Valinta.equals("paperi")) && (p2Valinta.equals("sakset"))) {
-                p2.setVoitot();
-                System.out.print(PELAAJA_2_VOITTAA);
-            }
-            if ((p1.getVoitot() >= 3) || (p2.getVoitot() >= 3)) {
-                peliLoppui = true;
-                System.out.print(", KOLME VOITTOA - PELI PÄÄTTYY");
-            }
-            if (p1Valinta == p2Valinta) {
-                tasapelit++;
-                System.out.print("Tasapeli");
-            }
-            pelatutPelit++;
-            System.out.println();
-        } while (peliLoppui != true);
+
+    private final Map<String, String> voittoKombinaatiot = new HashMap<>(); // Voittavat kombinaatiot
+    private final Pelaaja p1;
+    private final Pelaaja p2;
+    private boolean peliLoppui;         // Pelin status
+    private int pelatutPelit;           // Pelattujen pelien lkm
+    private int tasapelit;              // Tasapelien lkm
+
+    public Peli() {
+        voittoKombinaatiot.put("kivi", "sakset");
+        voittoKombinaatiot.put("sakset", "paperi");
+        voittoKombinaatiot.put("paperi", "kivi");
+        p1 = new Pelaaja();
+        p2 = new Pelaaja();
+        peliLoppui = false;
+        pelatutPelit = 0;
+        tasapelit = 0;
+    }
+
+    /**
+     * pelaa-metodi
+     * Tarkoituksena ohjata pelin kulkua.
+     *
+     * @see Pelaaja
+     */
+    public void pelaa() {
+        System.out.println("\nErä: " + pelatutPelit + " =====================\n");
+        System.out.println("Tasapelien lukumäärä: " + tasapelit + "\n");
+        System.out.println(p1 + "\n" + p2); // Tulostetaan pelaajien voitot
+        if (valitseVoittaja(p1.pelaajanValinta(), p2.pelaajanValinta()) >= PELIN_VOITTAA) {
+            peliLoppui = true;
+            System.out.print(", " + PELIN_VOITTAA + " VOITTOA - PELI PÄÄTTYY");
+        }
+        pelatutPelit++;
+        System.out.println();
+    }
+
+    public boolean getPeliLoppui() {
+        return this.peliLoppui;
+    }
+
+    /**
+     * tarkistaVoittaja-metodi
+     * Tarkoituksena vertailla pelaajien valintoja ja määrittää kumpi voittaa.
+     * Metodi käyttää voittoKombinaatiot-hashMappia.
+     */
+    private int valitseVoittaja(String p1Valinta, String p2Valinta) {
+        if (p1Valinta.equals(p2Valinta)) {
+            tasapelit++;
+            System.out.print("Tasapeli!");
+            return 0;
+        }
+
+        Pelaaja p;
+        if (voittoKombinaatiot.get(p1Valinta).equals(p2Valinta)) {
+            p1.addVoitto();
+            System.out.print("Pelaaja 1 voittaa");
+            p = p1;
+        } else {
+            p2.addVoitto();
+            System.out.print("Pelaaja 2 voittaa");
+            p = p2;
+        }
+
+        return p.getVoitot();
     }
 }
