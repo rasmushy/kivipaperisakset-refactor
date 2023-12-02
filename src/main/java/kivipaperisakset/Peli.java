@@ -59,6 +59,9 @@ public class Peli {
      * tarkoituksena vertailla pelaajien valintoja ja määrittää kumpi voittaa.
      * Mikäli jompikumpi pelaajista voittaa päivitetään pelin loppumistieto
      * Metodi käyttää voittoKombinaatiot-hashMappia.
+     * @param p1Valinta pelaajan 1 valinta
+     * @param p2Valinta pelaajan 2 valinta
+     * @see Pelaaja
      */
     public void valitseVoittaja(String p1Valinta, String p2Valinta) {
         //Tarkistetaan onko tasapeli

@@ -41,8 +41,7 @@ public final class Pelaaja {
      * @see Peli
      */
     public String pelaajanValinta() {
-        int c = random.nextInt(VALINNAT.length);
-        valinta = VALINNAT[c];
+        valinta = VALINNAT[random.nextInt(VALINNAT.length)];
         System.out.println("Pelaaja " + this.getId() + " valinta: " + this.getValinta());
         return valinta;
     }
